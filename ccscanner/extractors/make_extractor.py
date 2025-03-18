@@ -1,4 +1,5 @@
 import os
+import re
 import logging
 from ccscanner.extractors.extractor import Extractor
 from ccscanner.extractors.dependency import Dependency
@@ -15,7 +16,7 @@ class MakeExtractor(Extractor):
         self.target = target
 
     def run_extractor(self):
-        self.process_make()
+        self.process_make_lib()
 
     def process_make(self):
         lines = read_lines(self.target)
@@ -31,3 +32,20 @@ class MakeExtractor(Extractor):
                         dep = Dependency(dep_name, None)
                         dep.add_evidence(self.type, self.target+':'+line, 'High')
                         self.add_dependency(dep)
+
+
+    def process_make_lib(self):
+        lines = read_lines(self.target)
+        for line in lines:
+            line = line.strip()
+            if line.startswith('$(CC'):
+                libs = line.split(' ')
+                for lib in libs:
+                    if lib.startswith('-l'):
+                        dep_name = remove_lstrip(lib, '-l')
+                        new_dep_name = "lib" + dep_name + ".so"
+                        dep = Dependency(new_dep_name, None)
+                        dep.add_evidence(self.type, self.target+':'+line, 'High')
+                        self.add_dependency(dep)
+
+

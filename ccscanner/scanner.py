@@ -22,9 +22,7 @@ from ccscanner.extractors.bazel_extractor import BazelExtractor
 from ccscanner.extractors.ms_extractor import MsExtractor
 from ccscanner.extractors.xmake_extractor import XmakeExtractor
 from ccscanner.extractors.make_extractor import MakeExtractor
-# from ccscanner.extractors.buckaroo_extractor import BuckarooExtractor
 from ccscanner.extractors.dds_extractor import DdsExtractor
-# from ccscanner.extractors.buck_extractor import BuckExtractor
 from ccscanner.extractors.build2_extractor import Build2Extractor
 
 parser = argparse.ArgumentParser()
@@ -100,6 +98,8 @@ class scanner(object):
                 #     extractor = BuckExtractor
                 #     arg = os.path.join(root, filename)
                 elif filename.lower().startswith('makefile'):
+                    print("\n-------------------------------------")
+                    print("MakeExtractor called:root=" + root + ", filename=" + filename)
                     extractor = MakeExtractor
                     arg = os.path.join(root, filename)
                 elif filename.lower() == 'manifest':
